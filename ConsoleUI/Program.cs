@@ -33,14 +33,12 @@ namespace ConsoleUI
                 {
                     Console.WriteLine(product.ProductName + "/" + product.CategoryName);
                 }
-
-                else
-                {
-                    Console.WriteLine(result.Message);
-                }
-
             }
-            
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+
         }
     }
 }
