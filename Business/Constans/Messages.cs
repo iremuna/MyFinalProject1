@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Business.Constans
 {
-    //static olanlar newlenemez
+    //static olanlar newlenemez, newlenmeye gerek duyulmasın diye static yaparız. Message diyip direkt çağırabiliriz
     public static class Messages
     {
         public static string ProductAdded = "Ürün eklendi";

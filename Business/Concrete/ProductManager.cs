@@ -33,10 +33,10 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
-        public IDataResult<List<Product>> GetAll()
+        public SuccessDataResult<List<Product>> GetAll()
         {
             //İş kodları
-            if (DateTime.Now.Hour ==13)
+            if (DateTime.Now.Hour == 13)
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
@@ -44,12 +44,12 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductsListed);
         }
 
-        public IDataResult<List<Product>> GetAllByCategoryId(int id)
+        public SuccessDataResult<List<Product>> GetAllByCategoryId(int id)
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryID == id));
         }
 
-        public IDataResult<Product> GetById(int productId)
+        public SuccessDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>( _productDal.Get(p => p.ProductID == productId));
         }
@@ -62,6 +62,21 @@ namespace Business.Concrete
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetProductDetails());
+        }
+
+        IDataResult<List<Product>> IProductService.GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        IDataResult<List<Product>> IProductService.GetAllByCategoryId(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        IDataResult<Product> IProductService.GetById(int productId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
