@@ -38,7 +38,7 @@ namespace Business.Concrete
             //İş kodları
             if (DateTime.Now.Hour == 13)
             {
-                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+                return new SuccessDataResult<List<Product>>(Messages.MaintenanceTime);
             }
 
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductsListed);
@@ -61,7 +61,7 @@ namespace Business.Concrete
 
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetProductDetails());
+            return  new SuccessDataResult<List<ProductDetailDto>>   (_productDal.GetProductDetails());
         }
 
         IDataResult<List<Product>> IProductService.GetAll()
