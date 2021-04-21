@@ -3,6 +3,7 @@ using Business.BussinessAspects.Autofac;
 using Business.CCS;
 using Business.Constans;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -33,6 +34,8 @@ namespace Business.Concrete
         }
         [SecuredOperation("product.add")]
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
+
         public IResult Add(Product product)
         {
            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryID)),
@@ -49,7 +52,8 @@ namespace Business.Concrete
 
         }
 
-        public SuccessDataResult<List<Product>> GetAll()
+        [CacheAspect] //key, value
+        public IDataResult<List<Product>> GetAll()
         {
             //İş kodları
             //if (DateTime.Now.Hour == 13)
@@ -65,6 +69,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryID == id));
         }
 
+        [CacheAspect]
         public SuccessDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>( _productDal.Get(p => p.ProductID == productId));
@@ -79,9 +84,15 @@ namespace Business.Concrete
         {
             return  new SuccessDataResult<List<ProductDetailDto>>   (_productDal.GetProductDetails());
         }
-
+        [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
+            var result = _productDal.GetAll(p => p.CategoryID == product.CategoryID);
+            if (result >= 10)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
             throw new NotImplementedException();
         }
 
@@ -126,10 +137,22 @@ namespace Business.Concrete
                 var result = _categoryService.GetAll();
                 if (result.Data.Count>15)
                 {
-                    return new ErrorDataResult(Messages.categoryLimitExceded);
+                    return new ErrorResult(Messages.categoryLimitExceded);
                 }
                 return new SuccessResult();
             }
+        }
+
+        //[TransactionScopeAspect]
+        public IResult AddTransactionalTest(Product product)
+        {
+            Add(product);
+            if (product.UnitPrice < 10)
+            {
+                throw new Exception("");
+            }
+            Add(product);
+            return null;
         }
     }
 }

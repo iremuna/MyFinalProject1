@@ -1,5 +1,8 @@
 using Business.Abstract;
 using Business.Concrete;
+using Core.Extensions;
+using Core.IoC;
+using Core.Utilities.IoC;
 using Core.Utilities.Security.Encryption;
 using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
@@ -7,6 +10,7 @@ using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +41,7 @@ namespace WebAPI
             services.AddControllers();
             //services.AddSingleton<IProductService,ProductManager>(); // bana arka pplanda bir referans oluştur 
             //services.AddSingleton<IProductDal, EfProductDal>();
+            
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -55,7 +60,7 @@ namespace WebAPI
                     };
                 });
 
-
+            services.AddDependencyResolvers(new ICoreModule[] { new ICoreModule() });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
